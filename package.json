@@ -1,0 +1,24 @@
+{
+  "name": "verisure-local-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/app.js",
+  "scripts": {
+    "start": "nodemon",
+    "build": "ncc build src/app.ts -o dist"
+  },
+  "keywords": [],
+  "author": "trembon",
+  "license": "MIT",
+  "dependencies": {
+    "@vercel/ncc": "^0.38.1",
+    "express": "^4.19.2",
+    "verisure": "^5.1.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
+  }
+}
