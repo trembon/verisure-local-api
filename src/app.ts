@@ -40,12 +40,6 @@ verisure.getToken()
           humidityValue
           temperatureTimestamp
           temperatureValue
-          thresholds {
-            aboveMaxAlert
-            belowMinAlert
-            sensorType
-            __typename
-          }
           __typename
         }
 
@@ -76,39 +70,13 @@ verisure.getToken()
           __typename
         }
 
-        smartplugs {
-          device {
-            deviceLabel
-            area
-            gui {
-              support
-              label
-              __typename
-            }
-            __typename
-          }
-          currentState
-          icon
-          isHazardous
-          __typename
-        }
-
-        doorlocks {
-          device {
-            area
-            deviceLabel
-            __typename
-          }
-          currentLockState
-          __typename
-        }
-
         __typename
       }
     }`,
   }))
   .then((overview) => {
-    console.log('Overview:', overview);
+    console.log('Overview:');
+    console.dir(overview, { depth: null })
   })
   .catch((error) => {
     console.error(error);

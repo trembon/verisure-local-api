@@ -15,7 +15,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 16
+        node-version: 18
 
     - name: Build
       run: |
@@ -25,6 +25,6 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: azerothcore-soap-to-json.app
+        name: verisure-local-api.app
         path: dist/*
         if-no-files-found: error
