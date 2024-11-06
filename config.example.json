@@ -1,9 +1,0 @@
-{
-    "server":{
-        "port": 3000
-    },
-    "verisure":{
-        "username": "admin",
-        "password": "secret"
-    }
-}

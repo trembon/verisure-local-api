@@ -1,20 +1,20 @@
 import express from 'express';
-import fs from "fs";
-import IConfig from './interfaces/config';
+import IConfig, { readConfig } from './interfaces/config';
 import Verisure from 'verisure';
 
 const app = express();
 
 let config: IConfig;
 try {
-    let rawdata = fs.readFileSync('config.json');
-    config = JSON.parse(rawdata.toString());
+    config = readConfig();
 } catch (ex) {
-    console.error("Failed to read configuration file", ex);
+    console.error("Failed to read configuration variables", ex);
     process.exit();
 }
 
-const verisure = new Verisure(config.verisure.username, config.verisure.password);
+console.log('config', config);
+
+/*const verisure = new Verisure(config.verisure.username, config.verisure.password);
 
 verisure.getToken()
   .then(() => verisure.getInstallations())
@@ -81,7 +81,7 @@ verisure.getToken()
   .catch((error) => {
     console.error(error);
   });
-
+*/
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
