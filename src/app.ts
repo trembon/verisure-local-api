@@ -1,91 +1,57 @@
-import express from 'express';
-import IConfig, { readConfig } from './interfaces/config';
-import Verisure from 'verisure';
+import express from "express";
+import IConfig, { readConfig } from "./interfaces/config";
+import Verisure from "verisure";
+import { fetchInstallation, queryInstallation } from "./fetch-data";
+import "dotenv/config";
+
+console.log("App :: Starting");
 
 const app = express();
 
 let config: IConfig;
 try {
-    config = readConfig();
+  config = readConfig();
+  console.log("App :: Configuration loaded", config);
 } catch (ex) {
-    console.error("Failed to read configuration variables", ex);
-    process.exit();
+  console.error("App :: Failed to read configuration variables", ex);
+  process.exit();
 }
 
-console.log('config', config);
+async function main() {
+  console.log("Verisure :: Authenticating");
 
-/*const verisure = new Verisure(config.verisure.username, config.verisure.password);
+  const verisure = new Verisure(
+    config.verisure.username,
+    config.verisure.password
+  );
+  try {
+    await verisure.getToken();
+    console.log("Verisure :: Authenticated successfully");
+  } catch (ex) {
+    console.error("Verisure :: Failed to authenticate", ex);
+    process.exit();
+  }
 
-verisure.getToken()
-  .then(() => verisure.getInstallations())
-  .then((installations) => installations[0].client({
-    operationName: 'Overview',
-    query: `query Overview($giid: String!) {
-      installation(giid: $giid) {
-        alias
-        locale
+  const installation = await fetchInstallation(verisure);
+  let state = await queryInstallation(installation);
+  console.log("Verisure :: Initial state loaded");
 
-        climates {
-          device {
-            deviceLabel
-            area
-            gui {
-              label
-              __typename
-            }
-            __typename
-          }
-          humidityEnabled
-          humidityTimestamp
-          humidityValue
-          temperatureTimestamp
-          temperatureValue
-          __typename
-        }
+  setInterval(async () => {
+    console.log("Verisure :: Querying for updated state");
+    state = await queryInstallation(installation);
+  }, config.server.interval * 1000);
 
-        armState {
-          type
-          statusType
-          date
-          name
-          changedVia
-          __typename
-        }
-
-        doorWindows {
-          device {
-            deviceLabel
-            area
-            gui {
-              support
-              label
-              __typename
-            }
-            __typename
-          }
-          type
-          state
-          wired
-          reportTime
-          __typename
-        }
-
-        __typename
-      }
-    }`,
-  }))
-  .then((overview) => {
-    console.log('Overview:');
-    console.dir(overview, { depth: null })
-  })
-  .catch((error) => {
-    console.error(error);
+  app.get("/", (req, res) => {
+    res.send("Hello World!");
   });
-*/
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
 
-app.listen(config.server.port, () => {
-  return console.log(`Express is listening at http://localhost:${config.server.port}`);
-});
+  app.get("/devices", (req, res) => {
+    res.json(state);
+  });
+
+  app.listen(config.server.port, () => {
+    return console.log(`App :: Started (http://*:${config.server.port})`);
+  });
+}
+
+main();
