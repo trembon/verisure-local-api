@@ -6,9 +6,16 @@ import {
 } from "./interfaces/verisure";
 
 export interface Updates {
-  climates: Climate[];
+  climates: UpdatedClimate[];
   armStates: ArmState[];
   doorWindows: DoorWindow[];
+}
+
+export interface UpdatedClimate {
+  id: string;
+  value: number;
+  type: string;
+  timestamp: string;
 }
 
 export function detectUpdates(
@@ -30,16 +37,41 @@ export function detectUpdates(
       (c) => c.device.deviceLabel === newClimate.device.deviceLabel
     );
     if (!oldClimate) {
-      updates.climates.push(newClimate); // new device
+      // new device
+      updates.climates.push({
+        id: newClimate.device.deviceLabel,
+        value: newClimate.humidityValue,
+        type: "humidity",
+        timestamp: newClimate.humidityTimestamp,
+      });
+      updates.climates.push({
+        id: newClimate.device.deviceLabel,
+        value: newClimate.temperatureValue,
+        type: "temperature",
+        timestamp: newClimate.temperatureTimestamp,
+      });
       continue;
     }
 
     // compare timestamps
     if (
-      newClimate.humidityTimestamp !== oldClimate.humidityTimestamp ||
-      newClimate.temperatureTimestamp !== oldClimate.temperatureTimestamp
+      newClimate.humidityEnabled &&
+      newClimate.humidityTimestamp !== oldClimate.humidityTimestamp
     ) {
-      updates.climates.push(newClimate);
+      updates.climates.push({
+        id: newClimate.device.deviceLabel,
+        value: newClimate.humidityValue,
+        type: "humidity",
+        timestamp: newClimate.humidityTimestamp,
+      });
+    }
+    if (newClimate.temperatureTimestamp !== oldClimate.temperatureTimestamp) {
+      updates.climates.push({
+        id: newClimate.device.deviceLabel,
+        value: newClimate.temperatureValue,
+        type: "temperature",
+        timestamp: newClimate.temperatureTimestamp,
+      });
     }
   }
 

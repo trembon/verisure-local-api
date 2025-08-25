@@ -1,6 +1,7 @@
 export default interface IConfig {
   server: IConfigServer;
   verisure: IConfigVerisure;
+  webhooks: IConfigWebhooks;
 }
 
 export interface IConfigServer {
@@ -13,6 +14,11 @@ export interface IConfigVerisure {
   password: string;
 }
 
+export interface IConfigWebhooks {
+  sensorUpdates: string;
+  deviceUpdates: string;
+}
+
 export function readConfig(): IConfig {
   return {
     server: {
@@ -22,6 +28,10 @@ export function readConfig(): IConfig {
     verisure: {
       username: readValue("VERISURE_USERNAME"),
       password: readValue("VERISURE_PASSWORD"),
+    },
+    webhooks: {
+      sensorUpdates: readValue("WEBHOOK_SENSOR_UPDATES"),
+      deviceUpdates: readValue("WEBHOOK_DEVICE_UPDATES"),
     },
   };
 }

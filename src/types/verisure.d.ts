@@ -5,6 +5,8 @@ declare module "verisure" {
   }
 
   export interface Installation {
+    giid: string;
+    locale: string;
     client(options: QueryInstallationOptions): Promise<unknown>;
   }
 
